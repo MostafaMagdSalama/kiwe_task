@@ -4,8 +4,10 @@ import requestIP from "request-ip"
 import { initDB } from "./src/config/DB";
 import AuthRouter from './src/routes/auth.router'
 import WeatherRouter from './src/routes/weather.router'
+import { logger } from "./src/config/Logger";
 
 dotenv.config();
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -26,6 +28,6 @@ app.use("/", WeatherRouter)
 
 // Start Server
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    logger.info(`Server is running on port ${PORT}`);
     initDB();
 });
