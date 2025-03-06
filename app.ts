@@ -5,6 +5,7 @@ import { initDB } from "./src/config/DB";
 import AuthRouter from './src/routes/auth.router'
 import WeatherRouter from './src/routes/weather.router'
 import { logger } from "./src/config/Logger";
+import { initCities } from "./src/config/fuzzy-search";
 
 dotenv.config();
 
@@ -30,4 +31,5 @@ app.use("/", WeatherRouter)
 app.listen(PORT, () => {
     logger.info(`Server is running on port ${PORT}`);
     initDB();
+    initCities()
 });

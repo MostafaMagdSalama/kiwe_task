@@ -1,11 +1,11 @@
 import { logger } from "../config/Logger"
 import * as weatherDal from '../dal/weather.dal'
 
-export const getWeatherByIPAddress = async (ip: string) => {
+export const getWeatherByLocKey = async (key: string) => {
 
-    logger.info("service...getWeatherByIPAddress...")
+    logger.info("service...getWeatherByLocKey...")
 
-    const weatherData = await weatherDal.getWeatherByIPAddress(ip);
+    const weatherData = await weatherDal.getWeatherByLocKey(key);
 
 
     return weatherData;
