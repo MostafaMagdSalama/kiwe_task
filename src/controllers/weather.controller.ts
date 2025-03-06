@@ -2,6 +2,7 @@ import { logger } from "../config/Logger"
 import { Request, Response } from "express"
 import * as weatherService from "../services/weather.service"
 import redis from '../config/redis'
+import { cityFuzzySearch } from "../utils/fuzzy-search"
 
 
 export const getWeatherByIP = async (req: Request, res: Response) => {
@@ -16,7 +17,7 @@ export const getWeatherByIP = async (req: Request, res: Response) => {
         })
     }
 
-    const data = await weatherService.getWeatherByIPAddress(req.clientIp ?? "");
+    const data = await weatherService.getWeatherByLocKey(req.clientIp ?? "");
 
 
 
@@ -24,4 +25,16 @@ export const getWeatherByIP = async (req: Request, res: Response) => {
         data
     })
 
+}
+
+export const getWeatherByCity = async (req: Request, res: Response) => {
+    logger.info("controller...getWeatherByCity...")
+
+    const city = await cityFuzzySearch(req.params.city);
+
+    const data = await weatherService.getWeatherByLocKey(city as string);
+
+    res.status(200).json({
+        data
+    })
 }
