@@ -5,5 +5,6 @@ import { favouriteCity } from '../validations/favourite-city-schema';
 const router = express.Router();
 
 router.post('/add/favorite', validate(favouriteCity), UserController.saveFavouriteCity)
+router.get('/fav-cities', UserController.listFavouriteCities)
 
 export default router;
