@@ -4,8 +4,10 @@ import requestIP from "request-ip"
 import { initDB } from "./src/config/DB";
 import AuthRouter from './src/routes/auth.router'
 import WeatherRouter from './src/routes/weather.router'
+import UserRouter from './src/routes/user.router'
 import { logger } from "./src/config/Logger";
 import { initCities } from "./src/config/fuzzy-search";
+import { userAuth } from "./src/middleware/user-auth.middleware";
 
 dotenv.config();
 
@@ -23,8 +25,9 @@ app.get("/", (req, res) => {
 
 // handle routes 
 
-app.use("/auth", AuthRouter)
 app.use("/", WeatherRouter)
+app.use("/auth", AuthRouter)
+app.use("/user", userAuth, UserRouter)
 
 
 // Start Server

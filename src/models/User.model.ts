@@ -5,6 +5,7 @@ import bcrypt from "bcrypt"
 interface IUser extends Document {
     userName: string
     password: string
+    favouriteCities?: string[]
     comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -20,6 +21,11 @@ const UserSchema = new mongoose.Schema<IUser>({
         type: String,
         require: true,
         minlength: [6, "Password must be at least 6 characters"],
+    },
+    favouriteCities: {
+        type: [String],
+        require: false,
+
     }
 }, {
     timestamps: true
