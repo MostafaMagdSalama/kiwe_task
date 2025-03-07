@@ -2,11 +2,13 @@ import express from "express"
 import UserModel from "../models/User.model"
 import { logger } from "../config/Logger"
 import jwt from "jsonwebtoken"
+import validate from "../middleware/validate.middleware";
+import { auth } from "../validations/auth.schema";
 
 const router = express.Router();
 
 
-router.post("/register", (req, res) => {
+router.post("/register", validate(auth), (req, res) => {
     logger.info("...register router...");
     try {
         const { userName, password } = req.body
@@ -21,7 +23,7 @@ router.post("/register", (req, res) => {
     }
 })
 
-router.post("/login", async (req, res) => {
+router.post("/login", validate(auth), async (req, res) => {
     logger.info("... login router ...");
     try {
         const { userName, password } = req.body
