@@ -10,6 +10,7 @@ import UserRouter from './src/routes/user.router'
 import { logger } from "./src/config/Logger";
 import { initCities } from "./src/config/fuzzy-search";
 import { userAuth } from "./src/middleware/user-auth.middleware";
+import { errorHandler } from "./src/middleware/error-handler.middleware";
 
 dotenv.config();
 
@@ -47,6 +48,9 @@ else {
     app.use("/auth", AuthRouter)
     app.use("/user", userAuth, UserRouter)
 
+
+    // global error handling 
+    app.use(errorHandler);
 
     // Start Server
     app.listen(PORT, () => {
