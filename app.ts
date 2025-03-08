@@ -11,6 +11,8 @@ import { logger } from "./src/config/Logger";
 import { initCities } from "./src/config/fuzzy-search";
 import { userAuth } from "./src/middleware/user-auth.middleware";
 import { errorHandler } from "./src/middleware/error-handler.middleware";
+import swaggerUi from "swagger-ui-express";
+import swaggerDocument from "./src/docs/swagger.json";
 
 dotenv.config();
 
@@ -36,6 +38,7 @@ else {
 
     app.use(express.json());
     app.use(requestIP.mw());
+
     // Health Check
     app.get("/", (req, res) => {
         res.send("Weather API is running!");
@@ -43,7 +46,7 @@ else {
 
 
     // handle routes 
-
+    app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
     app.use("/", WeatherRouter)
     app.use("/auth", AuthRouter)
     app.use("/user", userAuth, UserRouter)
@@ -56,7 +59,7 @@ else {
     app.listen(PORT, () => {
         logger.info(`Server is running on port ${PORT}`);
         initDB();
-        // initCities()
+        initCities()
     });
 
 }
