@@ -94,3 +94,7 @@ npm run test:coverage
   ```sh
   npm install && npm start
   ```
+  
+- test-coverage report screenshot:
+- 
+  ![Image](https://github.com/user-attachments/assets/d7087fd3-aecc-4b2e-9142-f710f8112f84)
