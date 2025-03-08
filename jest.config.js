@@ -9,6 +9,8 @@ module.exports = {
         "/coverage/",
         "/config/",
         "/models/",
+        "/middleware/",
+        "/errors/",
     ],
     transform: {
         "^.+\\.ts$": "ts-jest",
