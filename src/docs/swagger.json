@@ -1,0 +1,322 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API Documentation",
+        "version": "1.0.0",
+        "description": "This is the Swagger documentation for the project's API."
+    },
+    "servers": [
+        {
+            "url": "http://localhost:3000",
+            "description": "Local development server"
+        }
+    ],
+    "paths": {
+        "/auth/login": {
+            "post": {
+                "summary": "User Login",
+                "description": "Authenticate a user and return a JWT token.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "userName": {
+                                        "type": "string",
+                                        "example": "testUser"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "testPass"
+                                    }
+                                },
+                                "required": [
+                                    "userName",
+                                    "password"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful login",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "token": {
+                                            "type": "string",
+                                            "example": "jwt_token_string_here"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials"
+                    }
+                }
+            }
+        },
+        "/auth/register": {
+            "post": {
+                "summary": "User Registration",
+                "description": "Create a new user account.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "userName": {
+                                        "type": "string",
+                                        "example": "newUser"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "securePass123"
+                                    }
+                                },
+                                "required": [
+                                    "userName",
+                                    "password"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User registered successfully"
+                    },
+                    "400": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/users/fav-cities": {
+            "get": {
+                "summary": "Get favorite cities saved by user",
+                "description": "Retrieve a list of all favorite cities.",
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/add/favorite": {
+            "post": {
+                "summary": "Add a favorite city",
+                "description": "Save a favorite city for the user.",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "city": {
+                                        "type": "string",
+                                        "example": "Cairo"
+                                    }
+                                },
+                                "required": [
+                                    "city"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "City added successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "City added successfully"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/weather": {
+            "get": {
+                "summary": "Get weather by IP address",
+                "description": "Retrieve weather details based on user IP.",
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WeatherResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Weather data not found"
+                    }
+                }
+            }
+        },
+        "/weather/{city}": {
+            "get": {
+                "summary": "Get weather by IP address",
+                "description": "Retrieve weather details based on user IP.",
+                "parameters": [
+                    {
+                        "name": "city",
+                        "in": "path",
+                        "required": true,
+                        "description": "City name",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WeatherResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Weather data not found"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "BearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        },
+        "schemas": {
+            "WeatherResponse": {
+                "type": "object",
+                "properties": {
+                    "location": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "example": "Giza"
+                            },
+                            "region": {
+                                "type": "string",
+                                "example": ""
+                            },
+                            "country": {
+                                "type": "string",
+                                "example": "Egypt"
+                            },
+                            "lat": {
+                                "type": "number",
+                                "example": 30.01
+                            },
+                            "lon": {
+                                "type": "number",
+                                "example": 31.21
+                            },
+                            "tz_id": {
+                                "type": "string",
+                                "example": "Africa/Cairo"
+                            },
+                            "localtime_epoch": {
+                                "type": "integer",
+                                "example": 1741437353
+                            },
+                            "localtime": {
+                                "type": "string",
+                                "example": "2025-03-08 14:35"
+                            }
+                        }
+                    },
+                    "current": {
+                        "type": "object",
+                        "properties": {
+                            "temp_c": {
+                                "type": "number",
+                                "example": 22.3
+                            },
+                            "temp_f": {
+                                "type": "number",
+                                "example": 72.1
+                            },
+                            "is_day": {
+                                "type": "integer",
+                                "example": 1
+                            },
+                            "condition": {
+                                "type": "object",
+                                "properties": {
+                                    "text": {
+                                        "type": "string",
+                                        "example": "Sunny"
+                                    },
+                                    "icon": {
+                                        "type": "string",
+                                        "example": "//cdn.weatherapi.com/weather/64x64/day/113.png"
+                                    }
+                                }
+                            },
+                            "wind_kph": {
+                                "type": "number",
+                                "example": 8.6
+                            },
+                            "humidity": {
+                                "type": "integer",
+                                "example": 38
+                            },
+                            "cloud": {
+                                "type": "integer",
+                                "example": 0
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "security": [
+        {
+            "BearerAuth": []
+        }
+    ]
+}
