@@ -21,7 +21,7 @@ export const login = async (req: Request, res: Response) => {
 
     const { userName, password } = req.body
 
-    const token = authService.login(userName, password);
+    const token = await authService.login(userName, password);
 
     res.status(200).json({ token });
 }
