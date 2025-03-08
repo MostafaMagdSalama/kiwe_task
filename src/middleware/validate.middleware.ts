@@ -5,6 +5,7 @@ const validate =
     (schema: AnyObjectSchema) =>
         async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
             try {
+                console.log("body is ", req.body)
 
                 req.body = await schema.validate(req.body, { abortEarly: false, stripUnknown: true });
                 next();

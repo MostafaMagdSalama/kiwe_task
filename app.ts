@@ -1,4 +1,6 @@
 import express from "express";
+import os from 'os'
+import cluster from 'cluster'
 import dotenv from "dotenv";
 import requestIP from "request-ip"
 import { initDB } from "./src/config/DB";
@@ -11,28 +13,47 @@ import { userAuth } from "./src/middleware/user-auth.middleware";
 
 dotenv.config();
 
+const numsOfCPUs = os.cpus().length / 2;
+console.log(numsOfCPUs)
+if (cluster.isPrimary) {
 
-const app = express();
-const PORT = process.env.PORT || 3000;
+    logger.info(`Master process ${process.pid} is running`);
 
-app.use(express.json());
-app.use(requestIP.mw());
-// Health Check
-app.get("/", (req, res) => {
-    res.send("Weather API is running!");
-});
+    for (let i = 0; i < numsOfCPUs; i++) {
+        cluster.fork()
+    }
+
+    cluster.on("exit", (worker, code, signal) => {
+        logger.error(`Worker ${worker.process.pid} died, starting a new one...`);
+        cluster.fork();
+    });
+}
+else {
+
+    const app = express();
+    const PORT = process.env.PORT || 3000;
+
+    app.use(express.json());
+    app.use(requestIP.mw());
+    // Health Check
+    app.get("/", (req, res) => {
+        res.send("Weather API is running!");
+    });
 
 
-// handle routes 
+    // handle routes 
 
-app.use("/", WeatherRouter)
-app.use("/auth", AuthRouter)
-app.use("/user", userAuth, UserRouter)
+    app.use("/", WeatherRouter)
+    app.use("/auth", AuthRouter)
+    app.use("/user", userAuth, UserRouter)
 
 
-// Start Server
-app.listen(PORT, () => {
-    logger.info(`Server is running on port ${PORT}`);
-    initDB();
-    initCities()
-});
+    // Start Server
+    app.listen(PORT, () => {
+        logger.info(`Server is running on port ${PORT}`);
+        initDB();
+        // initCities()
+    });
+
+}
+

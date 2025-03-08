@@ -1,14 +1,68 @@
 version: "3.8"
 
 services:
+  app:
+    build: .
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/mydatabase
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - PORT=3000
+    env_file:
+      - .env
+    depends_on:
+      redis:
+        condition: service_healthy
+      mongo:
+        condition: service_healthy
+    restart: always
+    deploy:
+      replicas: 4
+      restart_policy:
+        condition: on-failure
+    networks:
+      - my_network
+
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    restart: always
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - my_network
+
   redis:
     image: redis:latest
-    container_name: my-redis
+    container_name: redis
     ports:
       - "6379:6379"
+    restart: always
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
-      - redis_network
+      - my_network
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "3000:80"
+    depends_on:
+      - app
+    networks:
+      - my_network
 
 networks:
-  redis_network:
+  my_network:
     driver: bridge
